@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description="Extract statistical analysis of te
 parser.add_argument('-v', help="verbose output")
 parser.add_argument('-f', help="file to analyse")
 parser.add_argument('-t', help="maximum value for the top list (default is 100) -1 is no limit", default=100)
+parser.add_argument('-s', help="display the overall statistics (default is False)", default=False,  action='store_true')
 parser.add_argument('-o', help="output format (default is csv)", default="csv")
 args = parser.parse_args()
 if args.f is None:
@@ -37,34 +38,45 @@ doc = nlp(text)
 
 analysis = ["verb:napkin", "noun:napkin", "hashtag:napkin", "mention:napkin", "digit:napkin", "url:napking", "oov:napkin", "labels:napkin"]
 
+redisdb.hset("stats", "token", doc.__len__())
+
 for token in doc:
         if token.pos_ == "VERB" and not token.is_oov:
             redisdb.zincrby("verb:napkin", 1, token.lemma_)
+            redisdb.hincrby("stats", "verb:napkin", 1)
             continue
         if token.pos_ == "NOUN" and not token.is_oov:
             redisdb.zincrby("noun:napkin", 1, token.lemma_)
+            redisdb.hincrby("stats", "noun:napkin", 1)
             continue
 
         if token.is_oov:
             value = "{}".format(token)
             if value.startswith('#'):
                 redisdb.zincrby("hashtag:napkin", 1, value[1:])
+                redisdb.hincrby("stats", "hashtag:napkin", 1)
                 continue
             if value.startswith('@'):
                 redisdb.zincrby("mention:napkin", 1, value[1:])
+                redisdb.hincrby("stats", "mention:napkin", 1)
                 continue
             if token.is_digit:
                 redisdb.zincrby("digit:napkin", 1, value)
+                redisdb.hincrby("stats", "digit:napkin", 1)
                 continue
             if token.is_space:
+                redisdb.hincrby("stats", "space:napkin", 1)
                 continue
             if token.like_url:
                 redisdb.zincrby("url:napkin", 1, value)
+                redisdb.hincrby("stats", "url:napkin", 1)
                 continue
             if token.like_email:
                 redisdb.zincrby("email:napkin", 1, value)
+                redisdb.hincrby("stats", "email:napkin", 1)
                 continue
             redisdb.zincrby("oov:napkin", 1, value)
+            redisdb.hincrby("stats", "oov:napkin", 1)
 
 
 for entity in doc.ents:
@@ -78,3 +90,5 @@ for anal in analysis:
                 print ("{},{}".format(a[0],a[1]))
         print ("#")
 
+if args.s:
+    print (redisdb.hgetall('stats'))

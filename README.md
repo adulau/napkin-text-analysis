@@ -22,7 +22,7 @@ Analysis features are :
 # how to use napkin
 
 ~~~~
-usage: napkin.py [-h] [-v V] [-f F] [-t T] [-o O]
+usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O]
 
 Extract statistical analysis of text
 
@@ -31,6 +31,7 @@ optional arguments:
   -v V        verbose output
   -f F        file to analyse
   -t T        maximum value for the top list (default is 100) -1 is no limit
+  -s          display the overall statistics (default is False)
   -o O        output format (default is csv)
 ~~~~
 
