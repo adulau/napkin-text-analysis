@@ -36,7 +36,9 @@ with open(args.f, 'r') as file:
 
 doc = nlp(text)
 
-analysis = ["verb:napkin", "noun:napkin", "hashtag:napkin", "mention:napkin", "digit:napkin", "url:napking", "oov:napkin", "labels:napkin"]
+analysis = ["verb:napkin", "noun:napkin", "hashtag:napkin", "mention:napkin",
+            "digit:napkin", "url:napking", "oov:napkin", "labels:napkin",
+            "punct:napkin"]
 
 redisdb.hset("stats", "token", doc.__len__())
 
@@ -75,6 +77,11 @@ for token in doc:
                 redisdb.zincrby("email:napkin", 1, value)
                 redisdb.hincrby("stats", "email:napkin", 1)
                 continue
+            if token.is_punct:
+                redisdb.zincrby("punct:napkin", 1, value)
+                redisdb.hincrby("stats", "punct:napkin", 1)
+                continue
+
             redisdb.zincrby("oov:napkin", 1, value)
             redisdb.hincrby("stats", "oov:napkin", 1)
 
