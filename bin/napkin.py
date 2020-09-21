@@ -6,13 +6,14 @@ import spacy
 from spacy_langdetect import LanguageDetector
 import argparse
 import sys
+import simplejson as json
 
 parser = argparse.ArgumentParser(description="Extract statistical analysis of text")
 parser.add_argument('-v', help="verbose output")
 parser.add_argument('-f', help="file to analyse")
 parser.add_argument('-t', help="maximum value for the top list (default is 100) -1 is no limit", default=100)
 parser.add_argument('-s', help="display the overall statistics (default is False)", default=False,  action='store_true')
-parser.add_argument('-o', help="output format (default is csv)", default="csv")
+parser.add_argument('-o', help="output format (default is csv), json", default="csv")
 args = parser.parse_args()
 if args.f is None:
     parser.print_help()
@@ -89,13 +90,23 @@ for token in doc:
 for entity in doc.ents:
         redisdb.zincrby("labels:napkin", 1, entity.label_)
 
+if args.o == "json":
+    output_json = {"format":"napkin"}
 for anal in analysis:
         x = redisdb.zrevrange(anal, 1, args.t, withscores=True)
-        print ("# Top {} of {}".format(args.t, anal))
+        if args.o == "csv":
+            print ("# Top {} of {}".format(args.t, anal))
+        elif args.o == "json":
+            output_json.update({anal:[]})
         for a in x:
             if args.o == "csv":
                 print ("{},{}".format(a[0],a[1]))
-        print ("#")
+            elif args.o == "json":
+                output_json[anal].append(a)
+        if args.o == "csv":
+            print ("#")
 
 if args.s:
     print (redisdb.hgetall('stats'))
+if args.o == "json":
+    print(json.dumps(output_json))
