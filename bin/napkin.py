@@ -14,6 +14,8 @@ parser.add_argument('-f', help="file to analyse")
 parser.add_argument('-t', help="maximum value for the top list (default is 100) -1 is no limit", default=100)
 parser.add_argument('-s', help="display the overall statistics (default is False)", default=False,  action='store_true')
 parser.add_argument('-o', help="output format (default is csv), json", default="csv")
+parser.add_argument("-l", help="language used for the analysis (default is en)", default="en")
+
 args = parser.parse_args()
 if args.f is None:
     parser.print_help()
@@ -27,7 +29,11 @@ except:
     print("Redis database on port 6380 is not running...", file=sys.stderr)
     sys.exit()
 
-nlp = spacy.load("en_core_web_md")
+if args.l == "fr":
+    nlp = spacy.load("fr_core_news_md")
+else:
+    nlp = spacy.load("en_core_web_md")
+
 nlp.add_pipe(LanguageDetector(), name='language_detector', last=True)
 
 nlp.max_length = 2000000
