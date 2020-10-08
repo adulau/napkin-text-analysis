@@ -15,6 +15,8 @@ Analysis features are :
 
 Verbs and nouns are in their lemmatized form by default but the option `--verbatim` allows to keep the original inflection.
 
+Intermediate results are stored in a Redis database to allow the analysis of multiple text files.
+
 # requirements
 
 - Python >= 3.6
@@ -25,19 +27,23 @@ Verbs and nouns are in their lemmatized form by default but the option `--verbat
 
 ~~~~
 usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
+                 [--no-flushdb]
 
 Extract statistical analysis of text
 
 optional arguments:
-  -h, --help  show this help message and exit
-  -v V        verbose output
-  -f F        file to analyse
-  -t T        maximum value for the top list (default is 100) -1 is no limit
-  -s          display the overall statistics (default is False)
-  -o O        output format (default is csv), json
-  -l L        language used for the analysis (default is en)
-  --verbatim  Don't use the lemmatized form, use verbatim. (default is the
-              lematized form)
+  -h, --help    show this help message and exit
+  -v V          verbose output
+  -f F          file to analyse
+  -t T          maximum value for the top list (default is 100) -1 is no limit
+  -s            display the overall statistics (default is False)
+  -o O          output format (default is csv), json
+  -l L          language used for the analysis (default is en)
+  --verbatim    Don't use the lemmatized form, use verbatim. (default is the
+                lematized form)
+  --no-flushdb  Don't flush the redisdb, useful when you want to process
+                multiple files and aggregate the results. (by default the
+                redis database is flushed at each run)
 ~~~~
 
 # example usage of napkin

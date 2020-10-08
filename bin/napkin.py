@@ -16,6 +16,7 @@ parser.add_argument('-s', help="display the overall statistics (default is False
 parser.add_argument('-o', help="output format (default is csv), json", default="csv")
 parser.add_argument('-l', help="language used for the analysis (default is en)", default="en")
 parser.add_argument('--verbatim', help="Don't use the lemmatized form, use verbatim. (default is the lematized form)", default=False, action='store_true')
+parser.add_argument('--no-flushdb', help="Don't flush the redisdb, useful when you want to process multiple files and aggregate the results. (by default the redis database is flushed at each run)", default=False, action='store_true')
 
 args = parser.parse_args()
 if args.f is None:
@@ -25,10 +26,13 @@ if args.f is None:
 redisdb = redis.Redis(host="localhost", port=6380, db=5)
 
 try:
-    redisdb.flushdb()
+    redisdb.ping()
 except:
     print("Redis database on port 6380 is not running...", file=sys.stderr)
     sys.exit()
+
+if not args.no_flushdb:
+    redisdb.flushdb()
 
 if args.l == "fr":
     nlp = spacy.load("fr_core_news_md")
