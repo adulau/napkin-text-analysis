@@ -13,6 +13,8 @@ Analysis features are :
 - Mention frequency (everything prefixed with an @ symbol)
 - Out-Of-Vocabulary (OOV) word frequency meaning any words outside English dictionary
 
+Verbs and nouns are in their lemmatized form by default but the option `--verbatim` allows to keep the original inflection.
+
 # requirements
 
 - Python >= 3.6
@@ -22,7 +24,7 @@ Analysis features are :
 # how to use napkin
 
 ~~~~
-usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O]
+usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
 
 Extract statistical analysis of text
 
@@ -32,7 +34,10 @@ optional arguments:
   -f F        file to analyse
   -t T        maximum value for the top list (default is 100) -1 is no limit
   -s          display the overall statistics (default is False)
-  -o O        output format (default is csv)
+  -o O        output format (default is csv), json
+  -l L        language used for the analysis (default is en)
+  --verbatim  Don't use the lemmatized form, use verbatim. (default is the
+              lematized form)
 ~~~~
 
 # example usage of napkin

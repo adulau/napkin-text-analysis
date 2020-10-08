@@ -14,7 +14,8 @@ parser.add_argument('-f', help="file to analyse")
 parser.add_argument('-t', help="maximum value for the top list (default is 100) -1 is no limit", default=100)
 parser.add_argument('-s', help="display the overall statistics (default is False)", default=False,  action='store_true')
 parser.add_argument('-o', help="output format (default is csv), json", default="csv")
-parser.add_argument("-l", help="language used for the analysis (default is en)", default="en")
+parser.add_argument('-l', help="language used for the analysis (default is en)", default="en")
+parser.add_argument('--verbatim', help="Don't use the lemmatized form, use verbatim. (default is the lematized form)", default=False, action='store_true')
 
 args = parser.parse_args()
 if args.f is None:
@@ -51,11 +52,17 @@ redisdb.hset("stats", "token", doc.__len__())
 
 for token in doc:
         if token.pos_ == "VERB" and not token.is_oov:
-            redisdb.zincrby("verb:napkin", 1, token.lemma_)
+            if not args.verbatim:
+                redisdb.zincrby("verb:napkin", 1, token.lemma_)
+            else:
+                redisdb.zincrby("verb:napkin", 1, token.text)
             redisdb.hincrby("stats", "verb:napkin", 1)
             continue
         if token.pos_ == "NOUN" and not token.is_oov:
-            redisdb.zincrby("noun:napkin", 1, token.lemma_)
+            if not args.verbatim:
+                redisdb.zincrby("noun:napkin", 1, token.lemma_)
+            else:
+                redisdb.zincrby("noun:napkin", 1, token.text)
             redisdb.hincrby("stats", "noun:napkin", 1)
             continue
 
