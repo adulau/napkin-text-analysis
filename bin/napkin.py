@@ -17,13 +17,17 @@ parser.add_argument('-o', help="output format (default is csv), json", default="
 parser.add_argument('-l', help="language used for the analysis (default is en)", default="en")
 parser.add_argument('--verbatim', help="Don't use the lemmatized form, use verbatim. (default is the lematized form)", default=False, action='store_true')
 parser.add_argument('--no-flushdb', help="Don't flush the redisdb, useful when you want to process multiple files and aggregate the results. (by default the redis database is flushed at each run)", default=False, action='store_true')
+parser.add_argument('--binary', help="Output response in binary instead of UTF-8 (default)", default=False, action='store_true')
 
 args = parser.parse_args()
 if args.f is None:
     parser.print_help()
     sys.exit()
 
-redisdb = redis.Redis(host="localhost", port=6380, db=5)
+if not args.binary:
+    redisdb = redis.Redis(host="localhost", port=6380, db=5, encoding='utf-8', decode_responses=True)
+else:
+    redisdb = redis.Redis(host="localhost", port=6380, db=5)
 
 try:
     redisdb.ping()

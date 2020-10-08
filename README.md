@@ -27,7 +27,7 @@ Intermediate results are stored in a Redis database to allow the analysis of mul
 
 ~~~~
 usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
-                 [--no-flushdb]
+                 [--no-flushdb] [--binary]
 
 Extract statistical analysis of text
 
@@ -44,6 +44,7 @@ optional arguments:
   --no-flushdb  Don't flush the redisdb, useful when you want to process
                 multiple files and aggregate the results. (by default the
                 redis database is flushed at each run)
+  --binary      Output response in binary instead of UTF-8 (default)
 ~~~~
 
 # example usage of napkin
