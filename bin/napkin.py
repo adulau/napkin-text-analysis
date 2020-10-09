@@ -52,64 +52,64 @@ with open(args.f, 'r') as file:
 
 doc = nlp(text)
 
-analysis = ["verb:napkin", "noun:napkin", "hashtag:napkin", "mention:napkin",
-            "digit:napkin", "url:napking", "oov:napkin", "labels:napkin",
-            "punct:napkin"]
+analysis = ["verb", "noun", "hashtag", "mention",
+            "digit", "url", "oov", "labels",
+            "punct"]
 
 redisdb.hset("stats", "token", doc.__len__())
 
 for token in doc:
         if token.pos_ == "VERB" and not token.is_oov:
             if not args.verbatim:
-                redisdb.zincrby("verb:napkin", 1, token.lemma_)
+                redisdb.zincrby("verb", 1, token.lemma_)
             else:
-                redisdb.zincrby("verb:napkin", 1, token.text)
-            redisdb.hincrby("stats", "verb:napkin", 1)
+                redisdb.zincrby("verb", 1, token.text)
+            redisdb.hincrby("stats", "verb", 1)
             continue
         if token.pos_ == "NOUN" and not token.is_oov:
             if not args.verbatim:
-                redisdb.zincrby("noun:napkin", 1, token.lemma_)
+                redisdb.zincrby("noun", 1, token.lemma_)
             else:
-                redisdb.zincrby("noun:napkin", 1, token.text)
-            redisdb.hincrby("stats", "noun:napkin", 1)
+                redisdb.zincrby("noun", 1, token.text)
+            redisdb.hincrby("stats", "noun", 1)
             continue
 
         if token.is_oov:
             value = "{}".format(token)
             if value.startswith('#'):
-                redisdb.zincrby("hashtag:napkin", 1, value[1:])
-                redisdb.hincrby("stats", "hashtag:napkin", 1)
+                redisdb.zincrby("hashtag", 1, value[1:])
+                redisdb.hincrby("stats", "hashtag", 1)
                 continue
             if value.startswith('@'):
-                redisdb.zincrby("mention:napkin", 1, value[1:])
-                redisdb.hincrby("stats", "mention:napkin", 1)
+                redisdb.zincrby("mention", 1, value[1:])
+                redisdb.hincrby("stats", "mention", 1)
                 continue
             if token.is_digit:
-                redisdb.zincrby("digit:napkin", 1, value)
-                redisdb.hincrby("stats", "digit:napkin", 1)
+                redisdb.zincrby("digit", 1, value)
+                redisdb.hincrby("stats", "digit", 1)
                 continue
             if token.is_space:
-                redisdb.hincrby("stats", "space:napkin", 1)
+                redisdb.hincrby("stats", "space", 1)
                 continue
             if token.like_url:
-                redisdb.zincrby("url:napkin", 1, value)
-                redisdb.hincrby("stats", "url:napkin", 1)
+                redisdb.zincrby("url", 1, value)
+                redisdb.hincrby("stats", "url", 1)
                 continue
             if token.like_email:
-                redisdb.zincrby("email:napkin", 1, value)
-                redisdb.hincrby("stats", "email:napkin", 1)
+                redisdb.zincrby("email", 1, value)
+                redisdb.hincrby("stats", "email", 1)
                 continue
             if token.is_punct:
-                redisdb.zincrby("punct:napkin", 1, value)
-                redisdb.hincrby("stats", "punct:napkin", 1)
+                redisdb.zincrby("punct", 1, value)
+                redisdb.hincrby("stats", "punct", 1)
                 continue
 
-            redisdb.zincrby("oov:napkin", 1, value)
-            redisdb.hincrby("stats", "oov:napkin", 1)
+            redisdb.zincrby("oov", 1, value)
+            redisdb.hincrby("stats", "oov", 1)
 
 
 for entity in doc.ents:
-        redisdb.zincrby("labels:napkin", 1, entity.label_)
+        redisdb.zincrby("labels", 1, entity.label_)
 
 if args.o == "json":
     output_json = {"format":"napkin"}
