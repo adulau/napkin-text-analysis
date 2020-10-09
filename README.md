@@ -1,5 +1,7 @@
 # napkin-text-analysis
 
+![napkin text analysis - logo](./logo/logo.png)
+
 Napkin is a Python tool to produce statistical analysis of a text.
 
 Analysis features are :
@@ -21,7 +23,9 @@ Intermediate results are stored in a Redis database to allow the analysis of mul
 
 - Python >= 3.6
 - spacy.io
-- redis (a redis server running on port 6380)
+- redis (a redis server running on port 6380 is required)
+- pycld3
+- tabulate
 
 # how to use napkin
 
@@ -51,123 +55,98 @@ optional arguments:
 
 A sample file "The Prince, by Nicoló Machiavelli" is included to test napkin.
 
-`python3 napkin.py -f ../samples/the-prince.txt`
+`python3 ./bin/napkin.py -o readable -f samples/the-prince.txt -t 4`
 
 Example output:
 
 ~~~~
-# Top 100 of verb:napkin
-b'can',137.0
-b'make',116.0
-b'may',106.0
-b'would',102.0
-b'must',97.0
-b'take',86.0
-b'have',73.0
-b'see',72.0
-b'become',62.0
-b'find',61.0
-b'know',59.0
-b'should',54.0
-b'keep',53.0
-b'give',53.0
-b'hold',51.0
-b'say',50.0
-b'wish',48.0
-b'could',48.0
-b'fear',46.0
-b'maintain',45.0
-b'think',42.0
-b'use',40.0
-b'consider',40.0
-b'come',40.0
-b'lose',37.0
-b'live',35.0
-b'follow',33.0
-b'do',33.0
-b'remain',32.0
-b'gain',31.0
-b'avoid',31.0
-b'arise',31.0
-b'speak',29.0
-...
-# Top 100 of noun:napkin
-b'man',120.0
-b'state',108.0
-b'people',90.0
-b'one',90.0
-b'time',85.0
-b'work',83.0
-b'other',82.0
-b'thing',71.0
-b'way',60.0
-b'order',57.0
-b'fortune',49.0
-b'army',45.0
-b'force',44.0
-b'arm',44.0
-b'soldier',43.0
-b'subject',42.0
-b'power',41.0
-b'difficulty',39.0
-b'law',34.0
-b'reputation',33.0
-b'position',33.0
-b'enemy',33.0
-b'war',32.0
-b'kingdom',32.0
-b'cause',31.0
-b'possession',29.0
-b'action',29.0
-b'ruler',28.0
-b'rule',28.0
-b'example',28.0
-b'hand',27.0
-b'friend',27.0
-b'country',27.0
-b'king',26.0
-b'case',26.0
-...
-# Top 100 of digit:napkin
-b'84116',1.0
-b'750175',1.0
-b'6221541',1.0
-b'57037',1.0
-b'55901',1.0
-#
-# Top 100 of url:napking
-#
-# Top 100 of oov:napkin
-b'Fermo',7.0
-b'Vitelli',6.0
-b'Pertinax',6.0
-b'Orsinis',6.0
-b'Colonnas',6.0
-b'Bentivogli',6.0
-b'Agathocles',6.0
-b'Oliverotto',5.0
-b'C\xc3\xa6sar',5.0
-...
-# Top 100 of labels:napkin
-b'GPE',305.0
-b'CARDINAL',197.0
-b'ORG',189.0
-b'NORP',131.0
-b'ORDINAL',72.0
-b'DATE',44.0
-b'LAW',30.0
-b'LOC',18.0
-b'PRODUCT',9.0
-b'LANGUAGE',5.0
-b'WORK_OF_ART',4.0
-b'QUANTITY',4.0
-b'TIME',3.0
-b'FAC',3.0
-b'MONEY',2.0
-b'PERCENT',1.0
-b'EVENT',1.0
-
+╒═════════════════╕
+│ Top 4 of verb   │
+╞═════════════════╡
+│ 116 occurences  │
+├─────────────────┤
+│ make            │
+├─────────────────┤
+│ 106 occurences  │
+├─────────────────┤
+│ may             │
+├─────────────────┤
+│ 102 occurences  │
+├─────────────────┤
+│ would           │
+╘═════════════════╛
+╒═════════════════╕
+│ Top 4 of noun   │
+╞═════════════════╡
+│ 108 occurences  │
+├─────────────────┤
+│ state           │
+├─────────────────┤
+│ 90 occurences   │
+├─────────────────┤
+│ people          │
+├─────────────────┤
+│ one             │
+╘═════════════════╛
+╒════════════════════╕
+│ Top 4 of hashtag   │
+╞════════════════════╡
+╘════════════════════╛
+╒════════════════════╕
+│ Top 4 of mention   │
+╞════════════════════╡
+╘════════════════════╛
+╒══════════════════╕
+│   Top 4 of digit │
+╞══════════════════╡
+│           750175 │
+├──────────────────┤
+│          6221541 │
+├──────────────────┤
+│            57037 │
+╘══════════════════╛
+╒═════════════════════════════════════════╕
+│ Top 4 of url                            │
+╞═════════════════════════════════════════╡
+│ 1 occurences                            │
+├─────────────────────────────────────────┤
+│ www.gutenberg.org/license               │
+├─────────────────────────────────────────┤
+│ www.gutenberg.org/contact               │
+├─────────────────────────────────────────┤
+│ http://www.gutenberg.org/5/7/0/3/57037/ │
+╘═════════════════════════════════════════╛
+╒════════════════╕
+│ Top 4 of oov   │
+╞════════════════╡
+│ 6 occurences   │
+├────────────────┤
+│ Vitelli        │
+├────────────────┤
+│ Pertinax       │
+├────────────────┤
+│ Orsinis        │
+╘════════════════╛
+╒═══════════════════╕
+│ Top 4 of labels   │
+╞═══════════════════╡
+│ 197 occurences    │
+├───────────────────┤
+│ CARDINAL          │
+├───────────────────┤
+│ 189 occurences    │
+├───────────────────┤
+│ ORG               │
+├───────────────────┤
+│ 131 occurences    │
+├───────────────────┤
+│ NORP              │
+╘═══════════════════╛
 ~~~~
+
+# what about the name?
+
+The name 'napkin' came after a first sketch of the idea on a napkin. The goal was also to provide a simple text analysis tool which can be run on the corner of table in a kitchen.
 
 # LICENSE
 
