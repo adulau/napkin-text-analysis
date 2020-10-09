@@ -1,0 +1,5 @@
+simplejson
+spacy
+redis
+pycld3
+tabulate
