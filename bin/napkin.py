@@ -18,7 +18,8 @@ parser.add_argument('-o', help="output format (default is csv), json, readable",
 parser.add_argument('-l', help="language used for the analysis (default is en)", default="en")
 parser.add_argument('--verbatim', help="Don't use the lemmatized form, use verbatim. (default is the lematized form)", default=False, action='store_true')
 parser.add_argument('--no-flushdb', help="Don't flush the redisdb, useful when you want to process multiple files and aggregate the results. (by default the redis database is flushed at each run)", default=False, action='store_true')
-parser.add_argument('--binary', help="Output response in binary instead of UTF-8 (default)", default=False, action='store_true')
+parser.add_argument('--binary', help="set output in binary instead of UTF-8 (default)", default=False, action='store_true')
+parser.add_argument('--analysis', help="Limit output to a specific analysis (verb, noun, hashtag, mention, digit, url, oov, labels, punct). (Default is all analysis are displayed)", default='all')
 
 args = parser.parse_args()
 if args.f is None:
@@ -118,6 +119,10 @@ for entity in doc.ents:
 if args.o == "json":
     output_json = {"format":"napkin"}
 for anal in analysis:
+        if args.analysis == "all" or args.analysis == anal:
+            pass
+        else:
+            continue
         if args.o == "readable":
             previous_value = None
         x = redisdb.zrevrange(anal, 1, args.t, withscores=True, score_cast_func=int)

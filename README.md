@@ -31,24 +31,28 @@ Intermediate results are stored in a Redis database to allow the analysis of mul
 
 ~~~~
 usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
-                 [--no-flushdb] [--binary]
+                 [--no-flushdb] [--binary] [--analysis ANALYSIS]
 
 Extract statistical analysis of text
 
 optional arguments:
-  -h, --help    show this help message and exit
-  -v V          verbose output
-  -f F          file to analyse
-  -t T          maximum value for the top list (default is 100) -1 is no limit
-  -s            display the overall statistics (default is False)
-  -o O          output format (default is csv), json, readable
-  -l L          language used for the analysis (default is en)
-  --verbatim    Don't use the lemmatized form, use verbatim. (default is the
-                lematized form)
-  --no-flushdb  Don't flush the redisdb, useful when you want to process
-                multiple files and aggregate the results. (by default the
-                redis database is flushed at each run)
-  --binary      Output response in binary instead of UTF-8 (default)
+  -h, --help           show this help message and exit
+  -v V                 verbose output
+  -f F                 file to analyse
+  -t T                 maximum value for the top list (default is 100) -1 is
+                       no limit
+  -s                   display the overall statistics (default is False)
+  -o O                 output format (default is csv), json, readable
+  -l L                 language used for the analysis (default is en)
+  --verbatim           Don't use the lemmatized form, use verbatim. (default
+                       is the lematized form)
+  --no-flushdb         Don't flush the redisdb, useful when you want to
+                       process multiple files and aggregate the results. (by
+                       default the redis database is flushed at each run)
+  --binary             set output in binary instead of UTF-8 (default)
+  --analysis ANALYSIS  Limit output to a specific analysis (verb, noun,
+                       hashtag, mention, digit, url, oov, labels, punct).
+                       (Default is all analysis are displayed)
 ~~~~
 
 # example usage of napkin
