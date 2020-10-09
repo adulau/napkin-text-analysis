@@ -3,11 +3,11 @@
 
 import redis
 import spacy
-from spacy_langdetect import LanguageDetector
 import argparse
 import sys
 import simplejson as json
 from tabulate import tabulate
+import cld3
 
 parser = argparse.ArgumentParser(description="Extract statistical analysis of text")
 parser.add_argument('-v', help="verbose output")
@@ -41,15 +41,19 @@ if not args.no_flushdb:
 
 if args.l == "fr":
     nlp = spacy.load("fr_core_news_md")
-else:
+elif args.l == "en":
     nlp = spacy.load("en_core_web_md")
-
-nlp.add_pipe(LanguageDetector(), name='language_detector', last=True)
+else:
+    sys.exit("Language not supported")
 
 nlp.max_length = 2000000
 
 with open(args.f, 'r') as file:
     text = file.read()
+
+detect_lang = cld3.get_language(text)
+if detect_lang[0] != args.l:
+    sys.exit("Language detected ({}) is different than the NLP used ({})".format(detect_lang[0], args.l))
 
 doc = nlp(text)
 
