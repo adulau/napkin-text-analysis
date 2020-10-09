@@ -118,7 +118,7 @@ for anal in analysis:
             previous_value = None
         x = redisdb.zrevrange(anal, 1, args.t, withscores=True, score_cast_func=int)
         if args.o == "csv":
-            print("# Top {} of {}".format(args.t, anal))
+            print()
         elif args.o == "readable":
             print("")
             print("+++++ Top {} of {} +++++".format(args.t, anal))
@@ -127,7 +127,7 @@ for anal in analysis:
             output_json.update({anal:[]})
         for a in x:
             if args.o == "csv":
-                print("{},{}".format(a[0],a[1]))
+                print("{},{},{}".format(anal,a[0],a[1]))
             elif args.o == "readable":
                 if previous_value is None:
                     previous_value = a[1]
