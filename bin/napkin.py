@@ -73,6 +73,11 @@ for token in doc:
                 redisdb.zincrby("noun", 1, token.text)
             redisdb.hincrby("stats", "noun", 1)
             continue
+        if token.pos_ == "PUNCT" and not token.is_oov:
+            redisdb.zincrby("punct", 1, value)
+            redisdb.hincrby("stats", "punct", 1)
+            continue
+
 
         if token.is_oov:
             value = "{}".format(token)
@@ -99,11 +104,6 @@ for token in doc:
                 redisdb.zincrby("email", 1, value)
                 redisdb.hincrby("stats", "email", 1)
                 continue
-            if token.is_punct:
-                redisdb.zincrby("punct", 1, value)
-                redisdb.hincrby("stats", "punct", 1)
-                continue
-
             redisdb.zincrby("oov", 1, value)
             redisdb.hincrby("stats", "oov", 1)
 
