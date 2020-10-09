@@ -13,7 +13,7 @@ parser.add_argument('-v', help="verbose output")
 parser.add_argument('-f', help="file to analyse")
 parser.add_argument('-t', help="maximum value for the top list (default is 100) -1 is no limit", default=100)
 parser.add_argument('-s', help="display the overall statistics (default is False)", default=False,  action='store_true')
-parser.add_argument('-o', help="output format (default is csv), json", default="csv")
+parser.add_argument('-o', help="output format (default is csv), json, readable", default="csv")
 parser.add_argument('-l', help="language used for the analysis (default is en)", default="en")
 parser.add_argument('--verbatim', help="Don't use the lemmatized form, use verbatim. (default is the lematized form)", default=False, action='store_true')
 parser.add_argument('--no-flushdb', help="Don't flush the redisdb, useful when you want to process multiple files and aggregate the results. (by default the redis database is flushed at each run)", default=False, action='store_true')
@@ -114,20 +114,35 @@ for entity in doc.ents:
 if args.o == "json":
     output_json = {"format":"napkin"}
 for anal in analysis:
+        if args.o == "readable":
+            previous_value = None
         x = redisdb.zrevrange(anal, 1, args.t, withscores=True, score_cast_func=int)
         if args.o == "csv":
-            print ("# Top {} of {}".format(args.t, anal))
+            print("# Top {} of {}".format(args.t, anal))
+        elif args.o == "readable":
+            print("")
+            print("+++++ Top {} of {} +++++".format(args.t, anal))
+            print("")
         elif args.o == "json":
             output_json.update({anal:[]})
         for a in x:
             if args.o == "csv":
-                print ("{},{}".format(a[0],a[1]))
+                print("{},{}".format(a[0],a[1]))
+            elif args.o == "readable":
+                if previous_value is None:
+                    previous_value = a[1]
+                elif previous_value == a[1]:
+                    print("   - {}".format(a[0]))
+                elif a[1] < previous_value:
+                    previous_value = a[1]
+                    print("   ### {} occurences".format(a[1]))
+                    print("   - {}".format(a[0]))
             elif args.o == "json":
                 output_json[anal].append(a)
         if args.o == "csv":
-            print ("#")
+            print("#")
 
 if args.s:
-    print (redisdb.hgetall('stats'))
+    print(redisdb.hgetall('stats'))
 if args.o == "json":
     print(json.dumps(output_json))
