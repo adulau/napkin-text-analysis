@@ -37,7 +37,7 @@ optional arguments:
   -f F          file to analyse
   -t T          maximum value for the top list (default is 100) -1 is no limit
   -s            display the overall statistics (default is False)
-  -o O          output format (default is csv), json
+  -o O          output format (default is csv), json, readable
   -l L          language used for the analysis (default is en)
   --verbatim    Don't use the lemmatized form, use verbatim. (default is the
                 lematized form)

@@ -7,6 +7,7 @@ from spacy_langdetect import LanguageDetector
 import argparse
 import sys
 import simplejson as json
+from tabulate import tabulate
 
 parser = argparse.ArgumentParser(description="Extract statistical analysis of text")
 parser.add_argument('-v', help="verbose output")
@@ -120,9 +121,8 @@ for anal in analysis:
         if args.o == "csv":
             print()
         elif args.o == "readable":
-            print("")
-            print("+++++ Top {} of {} +++++".format(args.t, anal))
-            print("")
+            header = ["\033[1mTop {} of {}\033[0m".format(args.t, anal)]
+            readable_table = []
         elif args.o == "json":
             output_json.update({anal:[]})
         for a in x:
@@ -132,13 +132,15 @@ for anal in analysis:
                 if previous_value is None:
                     previous_value = a[1]
                 elif previous_value == a[1]:
-                    print("   - {}".format(a[0]))
+                    readable_table.append(["{}".format(a[0])])
                 elif a[1] < previous_value:
                     previous_value = a[1]
-                    print("   ### {} occurences".format(a[1]))
-                    print("   - {}".format(a[0]))
+                    readable_table.append(["{} occurences".format(a[1])])
+                    readable_table.append(["{}".format(a[0])])
             elif args.o == "json":
                 output_json[anal].append(a)
+        if args.o == "readable":
+            print(tabulate(readable_table, header, tablefmt="fancy_grid"))
         if args.o == "csv":
             print("#")
 
