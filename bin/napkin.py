@@ -64,14 +64,14 @@ analysis = ["verb", "noun", "hashtag", "mention",
 redisdb.hset("stats", "token", doc.__len__())
 
 for token in doc:
-        if token.pos_ == "VERB" and not token.is_oov:
+        if token.pos_ == "VERB" and not token.is_oov and len(token) > 1:
             if not args.verbatim:
                 redisdb.zincrby("verb", 1, token.lemma_)
             else:
                 redisdb.zincrby("verb", 1, token.text)
             redisdb.hincrby("stats", "verb", 1)
             continue
-        if token.pos_ == "NOUN" and not token.is_oov:
+        if token.pos_ == "NOUN" and not token.is_oov and len(token) > 1:
             if not args.verbatim:
                 redisdb.zincrby("noun", 1, token.lemma_)
             else:
@@ -82,7 +82,6 @@ for token in doc:
             redisdb.zincrby("punct", 1, value)
             redisdb.hincrby("stats", "punct", 1)
             continue
-
 
         if token.is_oov:
             value = "{}".format(token)
