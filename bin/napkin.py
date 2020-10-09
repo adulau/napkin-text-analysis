@@ -114,7 +114,7 @@ for entity in doc.ents:
 if args.o == "json":
     output_json = {"format":"napkin"}
 for anal in analysis:
-        x = redisdb.zrevrange(anal, 1, args.t, withscores=True)
+        x = redisdb.zrevrange(anal, 1, args.t, withscores=True, score_cast_func=int)
         if args.o == "csv":
             print ("# Top {} of {}".format(args.t, anal))
         elif args.o == "json":
