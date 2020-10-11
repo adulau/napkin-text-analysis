@@ -182,6 +182,10 @@ Example output:
 ╘════════════════════════════════════════════════════════════════════════╛
 ~~~~
 
+# overview of processing in napkin
+
+[overview of processing in napkin](https://raw.githubusercontent.com/adulau/napkin-text-analysis/master/doc/napkin.png)
+
 # what about the name?
 
 The name 'napkin' came after a first sketch of the idea on a napkin. The goal was also to provide a simple text analysis tool which can be run on the corner of table in a kitchen.
