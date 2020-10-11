@@ -33,32 +33,37 @@ Intermediate results are stored in a Redis database to allow the analysis of mul
 usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
                  [--no-flushdb] [--binary] [--analysis ANALYSIS]
                  [--disable-parser] [--disable-tagger]
+                 [--token-span TOKEN_SPAN]
 
 Extract statistical analysis of text
 
 optional arguments:
-  -h, --help           show this help message and exit
-  -v V                 verbose output
-  -f F                 file to analyse
-  -t T                 maximum value for the top list (default is 100) -1 is
-                       no limit
-  -s                   display the overall statistics (default is False)
-  -o O                 output format (default is csv), json, readable
-  -l L                 language used for the analysis (default is en)
-  --verbatim           Don't use the lemmatized form, use verbatim. (default
-                       is the lematized form)
-  --no-flushdb         Don't flush the redisdb, useful when you want to
-                       process multiple files and aggregate the results. (by
-                       default the redis database is flushed at each run)
-  --binary             set output in binary instead of UTF-8 (default)
-  --analysis ANALYSIS  Limit output to a specific analysis (verb, noun,
-                       hashtag, mention, digit, url, oov, labels, punct).
-                       (Default is all analysis are displayed)
-  --disable-parser     disable parser component in Spacy
-  --disable-tagger     disable tagger component in Spacy
+  -h, --help            show this help message and exit
+  -v V                  verbose output
+  -f F                  file to analyse
+  -t T                  maximum value for the top list (default is 100) -1 is
+                        no limit
+  -s                    display the overall statistics (default is False)
+  -o O                  output format (default is csv), json, readable
+  -l L                  language used for the analysis (default is en)
+  --verbatim            Don't use the lemmatized form, use verbatim. (default
+                        is the lematized form)
+  --no-flushdb          Don't flush the redisdb, useful when you want to
+                        process multiple files and aggregate the results. (by
+                        default the redis database is flushed at each run)
+  --binary              set output in binary instead of UTF-8 (default)
+  --analysis ANALYSIS   Limit output to a specific analysis (verb, noun,
+                        hashtag, mention, digit, url, oov, labels, punct).
+                        (Default is all analysis are displayed)
+  --disable-parser      disable parser component in Spacy
+  --disable-tagger      disable tagger component in Spacy
+  --token-span TOKEN_SPAN
+                        Find the sentences where a specific token is located
 ~~~~
 
 # example usage of napkin
+
+## Generate all analysis for a given text
 
 A sample file "The Prince, by Nicoló Machiavelli" is included to test napkin.
 
@@ -149,6 +154,32 @@ Example output:
 ├───────────────────┤
 │ NORP              │
 ╘═══════════════════╛
+~~~~
+
+## Extract the sentences associated to a specific token
+
+`python3 ./bin/napkin.py -o readable -f samples/the-prince.txt -t 4 --token-span "Vitelli"`
+
+~~~~
+╒════════════════════════════════════════════════════════════════════════╕
+│ Top 4 of span                                                          │
+╞════════════════════════════════════════════════════════════════════════╡
+│ Nevertheless, Messer Niccolo Vitelli has been seen in                  │
+│ our own time to destroy two fortresses in Città di Castello in order   │
+│ to keep that state.                                                    │
+├────────────────────────────────────────────────────────────────────────┤
+│ And the                                                                │
+│ difference between these forces can be easily seen if one considers    │
+│ the difference between the reputation of the duke when he had only the │
+│ French, when he had the Orsini and Vitelli, and when he had to rely    │
+│ on himself and his own soldiers.                                       │
+├────────────────────────────────────────────────────────────────────────┤
+│ And that his foundations were                                          │
+│ good is seen from the fact that the Romagna waited for him more than a │
+│ month; in Rome, although half dead, he remained secure, and although   │
+│ the Baglioni, Vitelli, and Orsini entered Rome they found no followers │
+│ against him.                                                           │
+╘════════════════════════════════════════════════════════════════════════╛
 ~~~~
 
 # what about the name?

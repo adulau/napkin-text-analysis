@@ -22,6 +22,7 @@ parser.add_argument('--binary', help="set output in binary instead of UTF-8 (def
 parser.add_argument('--analysis', help="Limit output to a specific analysis (verb, noun, hashtag, mention, digit, url, oov, labels, punct). (Default is all analysis are displayed)", default='all')
 parser.add_argument('--disable-parser', help="disable parser component in Spacy", default=False, action='store_true')
 parser.add_argument('--disable-tagger', help="disable tagger component in Spacy", default=False, action='store_true')
+parser.add_argument('--token-span', default= None, help='Find the sentences where a specific token is located')
 
 args = parser.parse_args()
 if args.f is None:
@@ -70,9 +71,15 @@ analysis = ["verb", "noun", "hashtag", "mention",
             "digit", "url", "oov", "labels",
             "punct"]
 
+if args.token_span and not disable:
+    analysis.append("span")
+
 redisdb.hset("stats", "token", doc.__len__())
 
 for token in doc:
+        if args.token_span is not None and not disable:
+            if token.text == args.token_span:
+                redisdb.zincrby("span", 1, token.sent.as_doc().text)
         if token.pos_ == "VERB" and not token.is_oov and len(token) > 1:
             if not args.verbatim:
                 redisdb.zincrby("verb", 1, token.lemma_)
