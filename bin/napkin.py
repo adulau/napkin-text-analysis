@@ -20,6 +20,8 @@ parser.add_argument('--verbatim', help="Don't use the lemmatized form, use verba
 parser.add_argument('--no-flushdb', help="Don't flush the redisdb, useful when you want to process multiple files and aggregate the results. (by default the redis database is flushed at each run)", default=False, action='store_true')
 parser.add_argument('--binary', help="set output in binary instead of UTF-8 (default)", default=False, action='store_true')
 parser.add_argument('--analysis', help="Limit output to a specific analysis (verb, noun, hashtag, mention, digit, url, oov, labels, punct). (Default is all analysis are displayed)", default='all')
+parser.add_argument('--disable-parser', help="disable parser component in Spacy", default=False, action='store_true')
+parser.add_argument('--disable-tagger', help="disable tagger component in Spacy", default=False, action='store_true')
 
 args = parser.parse_args()
 if args.f is None:
@@ -40,10 +42,16 @@ except:
 if not args.no_flushdb:
     redisdb.flushdb()
 
+disable = []
+if args.disable_parser:
+    disable.append("parser")
+if args.disable_tagger:
+    disable.append("tagger")
+
 if args.l == "fr":
-    nlp = spacy.load("fr_core_news_md")
+    nlp = spacy.load("fr_core_news_md", disable=disable)
 elif args.l == "en":
-    nlp = spacy.load("en_core_web_md")
+    nlp = spacy.load("en_core_web_md", disable=disable)
 else:
     sys.exit("Language not supported")
 

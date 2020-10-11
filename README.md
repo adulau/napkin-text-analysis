@@ -32,6 +32,7 @@ Intermediate results are stored in a Redis database to allow the analysis of mul
 ~~~~
 usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
                  [--no-flushdb] [--binary] [--analysis ANALYSIS]
+                 [--disable-parser] [--disable-tagger]
 
 Extract statistical analysis of text
 
@@ -53,6 +54,8 @@ optional arguments:
   --analysis ANALYSIS  Limit output to a specific analysis (verb, noun,
                        hashtag, mention, digit, url, oov, labels, punct).
                        (Default is all analysis are displayed)
+  --disable-parser     disable parser component in Spacy
+  --disable-tagger     disable tagger component in Spacy
 ~~~~
 
 # example usage of napkin
