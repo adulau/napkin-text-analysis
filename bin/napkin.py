@@ -134,17 +134,20 @@ for entity in doc.ents:
 if args.o == "json":
     output_json = {"format":"napkin"}
 for anal in analysis:
+        more_info = ""
         if args.analysis == "all" or args.analysis == anal:
             pass
         else:
             continue
+        if anal == "span":
+            more_info = "for {}".format(args.token_span)
         if args.o == "readable":
             previous_value = None
         x = redisdb.zrevrange(anal, 1, args.t, withscores=True, score_cast_func=int)
         if args.o == "csv":
             print()
         elif args.o == "readable":
-            header = ["\033[1mTop {} of {}\033[0m".format(args.t, anal)]
+            header = ["\033[1mTop {} of {} {}\033[0m".format(args.t, anal, more_info)]
             readable_table = []
         elif args.o == "json":
             output_json.update({anal:[]})
