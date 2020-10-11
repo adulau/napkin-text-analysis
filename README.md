@@ -184,7 +184,7 @@ Example output:
 
 # overview of processing in napkin
 
-[overview of processing in napkin](https://raw.githubusercontent.com/adulau/napkin-text-analysis/master/doc/napkin.png)
+![overview of processing in napkin](https://raw.githubusercontent.com/adulau/napkin-text-analysis/master/doc/napkin.png)
 
 # what about the name?
 
