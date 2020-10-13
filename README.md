@@ -269,6 +269,32 @@ Example output:
 ╘═════════════════════════════════════════════════════════════════════════╛
 ~~~~
 
+## Specify table format
+
+In `readable` output, the format can be set to any of the tabulate format supported. If you want the top 10 of out-of-vocabulary
+words from the text in GitHub markdown format.
+
+`python3 ./bin/napkin.py -o readable -f samples/the-prince.txt -t 10 --analysis oov --table-format github`
+
+| Top 10 of oov    |
+|------------------|
+| 9 occurences     |
+| Sforza           |
+| 7 occurences     |
+| Fermo            |
+| 6 occurences     |
+| Vitelli          |
+| Pertinax         |
+| Orsinis          |
+| Colonnas         |
+| Bentivogli       |
+| Agathocles       |
+| 5 occurences     |
+| Oliverotto       |
+| Cæsar            |
+| Commodus         |
+
+
 # overview of processing in napkin
 
 ![overview of processing in napkin](https://raw.githubusercontent.com/adulau/napkin-text-analysis/master/doc/napkin.png)
