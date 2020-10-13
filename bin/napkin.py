@@ -157,11 +157,9 @@ for anal in analysis:
             if args.o == "csv":
                 print("{},{},{}".format(anal,a[0],a[1]))
             elif args.o == "readable":
-                if previous_value is None:
-                    previous_value = a[1]
-                elif previous_value == a[1]:
+                if previous_value == a[1]:
                     readable_table.append(["{}".format(a[0])])
-                elif a[1] < previous_value:
+                elif previous_value is None or a[1] < previous_value:
                     previous_value = a[1]
                     readable_table.append(["{} occurences".format(a[1])])
                     readable_table.append(["{}".format(a[0])])
