@@ -9,6 +9,8 @@ import simplejson as json
 from tabulate import tabulate
 import cld3
 
+version = "0.9"
+
 parser = argparse.ArgumentParser(description="Extract statistical analysis of text")
 parser.add_argument('-v', help="verbose output")
 parser.add_argument('-f', help="file to analyse")
@@ -69,7 +71,7 @@ doc = nlp(text)
 
 analysis = ["verb", "noun", "hashtag", "mention",
             "digit", "url", "oov", "labels",
-            "punct"]
+            "punct", "email"]
 
 if args.token_span and not disable:
     analysis.append("span")
@@ -132,7 +134,7 @@ for entity in doc.ents:
         redisdb.zincrby("labels", 1, entity.label_)
 
 if args.o == "json":
-    output_json = {"format":"napkin"}
+    output_json = {"format":"napkin", "version": version}
 for anal in analysis:
         more_info = ""
         if args.analysis == "all" or args.analysis == anal:
@@ -143,7 +145,7 @@ for anal in analysis:
             more_info = "for {}".format(args.token_span)
         if args.o == "readable":
             previous_value = None
-        x = redisdb.zrevrange(anal, 1, args.t, withscores=True, score_cast_func=int)
+        x = redisdb.zrevrange(anal, 0, args.t, withscores=True, score_cast_func=int)
         if args.o == "csv":
             print()
         elif args.o == "readable":
