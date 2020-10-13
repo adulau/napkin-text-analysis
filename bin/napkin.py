@@ -25,7 +25,7 @@ parser.add_argument('--analysis', help="Limit output to a specific analysis (ver
 parser.add_argument('--disable-parser', help="disable parser component in Spacy", default=False, action='store_true')
 parser.add_argument('--disable-tagger', help="disable tagger component in Spacy", default=False, action='store_true')
 parser.add_argument('--token-span', default= None, help='Find the sentences where a specific token is located')
-
+parser.add_argument('--table-format', help="set tabulate format (default is fancy_grid)", default="fancy_grid")
 args = parser.parse_args()
 if args.f is None:
     parser.print_help()
@@ -166,7 +166,7 @@ for anal in analysis:
             elif args.o == "json":
                 output_json[anal].append(a)
         if args.o == "readable":
-            print(tabulate(readable_table, header, tablefmt="fancy_grid"))
+            print(tabulate(readable_table, header, tablefmt=args.table_format))
         if args.o == "csv":
             print("#")
 

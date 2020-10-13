@@ -33,7 +33,7 @@ Intermediate results are stored in a Redis database to allow the analysis of mul
 usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
                  [--no-flushdb] [--binary] [--analysis ANALYSIS]
                  [--disable-parser] [--disable-tagger]
-                 [--token-span TOKEN_SPAN]
+                 [--token-span TOKEN_SPAN] [--table-format TABLE_FORMAT]
 
 Extract statistical analysis of text
 
@@ -59,6 +59,8 @@ optional arguments:
   --disable-tagger      disable tagger component in Spacy
   --token-span TOKEN_SPAN
                         Find the sentences where a specific token is located
+  --table-format TABLE_FORMAT
+                        set tabulate format (default is fancy_grid)
 ~~~~
 
 # example usage of napkin
@@ -72,54 +74,84 @@ A sample file "The Prince, by Nicoló Machiavelli" is included to test napkin.
 Example output:
 
 ~~~~
-╒═════════════════╕
-│ Top 4 of verb   │
-╞═════════════════╡
-│ 116 occurences  │
-├─────────────────┤
-│ make            │
-├─────────────────┤
-│ 106 occurences  │
-├─────────────────┤
-│ may             │
-├─────────────────┤
-│ 102 occurences  │
-├─────────────────┤
-│ would           │
-╘═════════════════╛
-╒═════════════════╕
-│ Top 4 of noun   │
-╞═════════════════╡
-│ 108 occurences  │
-├─────────────────┤
-│ state           │
-├─────────────────┤
-│ 90 occurences   │
-├─────────────────┤
-│ people          │
-├─────────────────┤
-│ one             │
-╘═════════════════╛
-╒════════════════════╕
-│ Top 4 of hashtag   │
-╞════════════════════╡
-╘════════════════════╛
-╒════════════════════╕
-│ Top 4 of mention   │
-╞════════════════════╡
-╘════════════════════╛
 ╒══════════════════╕
-│   Top 4 of digit │
+│ Top 4 of verb    │
 ╞══════════════════╡
-│           750175 │
+│ 207 occurences   │
 ├──────────────────┤
-│          6221541 │
+│ will             │
 ├──────────────────┤
-│            57037 │
+│ 137 occurences   │
+├──────────────────┤
+│ can              │
+├──────────────────┤
+│ 116 occurences   │
+├──────────────────┤
+│ make             │
+├──────────────────┤
+│ 106 occurences   │
+├──────────────────┤
+│ may              │
+├──────────────────┤
+│ 102 occurences   │
+├──────────────────┤
+│ would            │
 ╘══════════════════╛
+╒══════════════════╕
+│ Top 4 of noun    │
+╞══════════════════╡
+│ 206 occurences   │
+├──────────────────┤
+│ prince           │
+├──────────────────┤
+│ 120 occurences   │
+├──────────────────┤
+│ man              │
+├──────────────────┤
+│ 108 occurences   │
+├──────────────────┤
+│ state            │
+├──────────────────┤
+│ 90 occurences    │
+├──────────────────┤
+│ people           │
+├──────────────────┤
+│ one              │
+╘══════════════════╛
+╒═════════════════════╕
+│ Top 4 of hashtag    │
+╞═════════════════════╡
+╘═════════════════════╛
+╒═════════════════════╕
+│ Top 4 of mention    │
+╞═════════════════════╡
+╘═════════════════════╛
+╒═══════════════════╕
+│ Top 4 of digit    │
+╞═══════════════════╡
+│ 1 occurences      │
+├───────────────────┤
+│ 99775             │
+├───────────────────┤
+│ 84116             │
+├───────────────────┤
+│ 750175            │
+├───────────────────┤
+│ 6221541           │
+├───────────────────┤
+│ 57037             │
+╘═══════════════════╛
 ╒═════════════════════════════════════════╕
 │ Top 4 of url                            │
 ╞═════════════════════════════════════════╡
+│ 5 occurences                            │
+├─────────────────────────────────────────┤
+│ www.gutenberg.org                       │
+├─────────────────────────────────────────┤
+│ 2 occurences                            │
+├─────────────────────────────────────────┤
+│ www.gutenberg.org/donate                │
+├─────────────────────────────────────────┤
 │ 1 occurences                            │
 ├─────────────────────────────────────────┤
 │ www.gutenberg.org/license               │
@@ -128,31 +160,73 @@ Example output:
 ├─────────────────────────────────────────┤
 │ http://www.gutenberg.org/5/7/0/3/57037/ │
 ╘═════════════════════════════════════════╛
-╒════════════════╕
-│ Top 4 of oov   │
-╞════════════════╡
-│ 6 occurences   │
-├────────────────┤
-│ Vitelli        │
-├────────────────┤
-│ Pertinax       │
-├────────────────┤
-│ Orsinis        │
-╘════════════════╛
+╒═════════════════╕
+│ Top 4 of oov    │
+╞═════════════════╡
+│ 9 occurences    │
+├─────────────────┤
+│ Sforza          │
+├─────────────────┤
+│ 7 occurences    │
+├─────────────────┤
+│ Fermo           │
+├─────────────────┤
+│ 6 occurences    │
+├─────────────────┤
+│ Vitelli         │
+├─────────────────┤
+│ Pertinax        │
+├─────────────────┤
+│ Orsinis         │
+╘═════════════════╛
+╒════════════════════╕
+│ Top 4 of labels    │
+╞════════════════════╡
+│ 339 occurences     │
+├────────────────────┤
+│ PERSON             │
+├────────────────────┤
+│ 305 occurences     │
+├────────────────────┤
+│ GPE                │
+├────────────────────┤
+│ 197 occurences     │
+├────────────────────┤
+│ CARDINAL           │
+├────────────────────┤
+│ 189 occurences     │
+├────────────────────┤
+│ ORG                │
+├────────────────────┤
+│ 131 occurences     │
+├────────────────────┤
+│ NORP               │
+╘════════════════════╛
 ╒═══════════════════╕
-│ Top 4 of labels   │
+│ Top 4 of punct    │
 ╞═══════════════════╡
-│ 197 occurences    │
+│ 3440 occurences   │
 ├───────────────────┤
-│ CARDINAL          │
 ├───────────────────┤
-│ 189 occurences    │
+│ 144 occurences    │
 ├───────────────────┤
-│ ORG               │
 ├───────────────────┤
-│ 131 occurences    │
+│ 32 occurences     │
 ├───────────────────┤
-│ NORP              │
+├───────────────────┤
+│ 26 occurences     │
+├───────────────────┤
+├───────────────────┤
+│ 11 occurences     │
+├───────────────────┤
+│ 1.F.3             │
+╘═══════════════════╛
+╒═══════════════════╕
+│ Top 4 of email    │
+╞═══════════════════╡
+│ 1 occurences      │
+├───────────────────┤
+│ gbnewby@pglaf.org │
 ╘═══════════════════╛
 ~~~~
 
@@ -161,25 +235,38 @@ Example output:
 `python3 ./bin/napkin.py -o readable -f samples/the-prince.txt -t 4 --token-span "Vitelli"`
 
 ~~~~
-╒════════════════════════════════════════════════════════════════════════╕
-│ Top 4 of span                                                          │
-╞════════════════════════════════════════════════════════════════════════╡
-│ Nevertheless, Messer Niccolo Vitelli has been seen in                  │
-│ our own time to destroy two fortresses in Città di Castello in order   │
-│ to keep that state.                                                    │
-├────────────────────────────────────────────────────────────────────────┤
-│ And the                                                                │
-│ difference between these forces can be easily seen if one considers    │
-│ the difference between the reputation of the duke when he had only the │
-│ French, when he had the Orsini and Vitelli, and when he had to rely    │
-│ on himself and his own soldiers.                                       │
-├────────────────────────────────────────────────────────────────────────┤
-│ And that his foundations were                                          │
-│ good is seen from the fact that the Romagna waited for him more than a │
-│ month; in Rome, although half dead, he remained secure, and although   │
-│ the Baglioni, Vitelli, and Orsini entered Rome they found no followers │
-│ against him.                                                           │
-╘════════════════════════════════════════════════════════════════════════╛
+╒═════════════════════════════════════════════════════════════════════════╕
+│ Top 4 of span for Vitelli                                               │
+╞═════════════════════════════════════════════════════════════════════════╡
+│ 1 occurences                                                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│ This duke entered                                                       │
+│ Romagna with auxiliary troops, leading forces composed entirely of      │
+│ French soldiers, and with these he took Imola and Forli; but as they    │
+│ seemed unsafe, he had recourse to mercenaries, and hired the Orsini and │
+│ Vitelli; afterwards finding these uncertain to handle, unfaithful and   │
+│ dangerous, he suppressed them, and relied upon his own men.             │
+├─────────────────────────────────────────────────────────────────────────┤
+│ The Florentines appointed Paolo Vitelli their captain,                  │
+│ a man of great prudence, who had risen from a private station to the    │
+│ highest reputation.                                                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Nevertheless, Messer Niccolo Vitelli has been seen in                   │
+│ our own time to destroy two fortresses in Città di Castello in order    │
+│ to keep that state.                                                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│ And the                                                                 │
+│ difference between these forces can be easily seen if one considers     │
+│ the difference between the reputation of the duke when he had only the  │
+│ French, when he had the Orsini and Vitelli, and when he had to rely     │
+│ on himself and his own soldiers.                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│ And that his foundations were                                           │
+│ good is seen from the fact that the Romagna waited for him more than a  │
+│ month; in Rome, although half dead, he remained secure, and although    │
+│ the Baglioni, Vitelli, and Orsini entered Rome they found no followers  │
+│ against him.                                                            │
+╘═════════════════════════════════════════════════════════════════════════╛
 ~~~~
 
 # overview of processing in napkin
