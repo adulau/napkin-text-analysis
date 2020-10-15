@@ -26,6 +26,7 @@ parser.add_argument('--disable-parser', help="disable parser component in Spacy"
 parser.add_argument('--disable-tagger', help="disable tagger component in Spacy", default=False, action='store_true')
 parser.add_argument('--token-span', default= None, help='Find the sentences where a specific token is located')
 parser.add_argument('--table-format', help="set tabulate format (default is fancy_grid)", default="fancy_grid")
+parser.add_argument('--full-labels', help="store each label value in a ranked set (default is False)", action='store_true', default=False)
 args = parser.parse_args()
 if args.f is None:
     parser.print_help()
@@ -78,6 +79,15 @@ if args.token_span and not disable:
 
 redisdb.hset("stats", "token", doc.__len__())
 
+labels = [ "EVENT", "PERCENT", "MONEY", "FAC", "TIME", "QUANTITY", "WORK_OF_ART", "LANGUAGE", "PRODUCT", "LOC", "LAW", "DATE", "ORDINAL", "NORP", "ORG", "CARDINAL", "GPE", "PERSON"]
+
+for entity in doc.ents:
+        redisdb.zincrby("labels", 1, entity.label_)
+        if not args.full_labels:
+            continue
+        if entity.label_ in labels:
+            redisdb.zincrby("label:{}".format(entity.label_), 1, entity.text)
+
 for token in doc:
         if args.token_span is not None and not disable:
             if token.text == args.token_span:
@@ -129,9 +139,6 @@ for token in doc:
             redisdb.zincrby("oov", 1, value)
             redisdb.hincrby("stats", "oov", 1)
 
-
-for entity in doc.ents:
-        redisdb.zincrby("labels", 1, entity.label_)
 
 if args.o == "json":
     output_json = {"format":"napkin", "version": version}
