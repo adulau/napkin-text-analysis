@@ -27,10 +27,16 @@ parser.add_argument('--disable-tagger', help="disable tagger component in Spacy"
 parser.add_argument('--token-span', default= None, help='Find the sentences where a specific token is located')
 parser.add_argument('--table-format', help="set tabulate format (default is fancy_grid)", default="fancy_grid")
 parser.add_argument('--full-labels', help="store each label value in a ranked set (default is False)", action='store_true', default=False)
+#parser.add_argument('--geolocation', help="export geolocation (default is False)", action='store_true', default=False)
+
 args = parser.parse_args()
+
 if args.f is None:
     parser.print_help()
     sys.exit()
+
+#if args.geolocation:
+#    args.full_labels = True
 
 if not args.binary:
     redisdb = redis.Redis(host="localhost", port=6380, db=5, encoding='utf-8', decode_responses=True)
@@ -53,8 +59,18 @@ if args.disable_tagger:
     disable.append("tagger")
 
 if args.l == "fr":
+    try :
+        nlp = spacy.load("fr_core_news_md", disable=disable)
+    except:
+        print("Downloading missing model")
+        spacy.cli.download("en_core_web_md")
     nlp = spacy.load("fr_core_news_md", disable=disable)
 elif args.l == "en":
+    try:
+        nlp = spacy.load("en_core_web_md", disable=disable)
+    except:
+        print("Downloading missing model")
+        spacy.cli.download("en_core_web_md")
     nlp = spacy.load("en_core_web_md", disable=disable)
 else:
     sys.exit("Language not supported")
