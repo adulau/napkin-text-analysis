@@ -123,7 +123,7 @@ for token in doc:
             redisdb.hincrby("stats", "noun", 1)
             continue
         if token.pos_ == "PUNCT" and not token.is_oov:
-            redisdb.zincrby("punct", 1, value)
+            redisdb.zincrby("punct", 1, "{}".format(token))
             redisdb.hincrby("stats", "punct", 1)
             continue
 
