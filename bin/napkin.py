@@ -39,14 +39,14 @@ if args.f is None:
 #    args.full_labels = True
 
 if not args.binary:
-    redisdb = redis.Redis(host="localhost", port=6380, db=5, encoding='utf-8', decode_responses=True)
+    redisdb = redis.Redis(host="localhost", port=6379, db=5, encoding='utf-8', decode_responses=True)
 else:
-    redisdb = redis.Redis(host="localhost", port=6380, db=5)
+    redisdb = redis.Redis(host="localhost", port=6379, db=5)
 
 try:
     redisdb.ping()
 except:
-    print("Redis database on port 6380 is not running...", file=sys.stderr)
+    print("Redis database on port 6379 is not running...", file=sys.stderr)
     sys.exit()
 
 if not args.no_flushdb:
