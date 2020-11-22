@@ -30,10 +30,11 @@ Intermediate results are stored in a Redis database to allow the analysis of mul
 # how to use napkin
 
 ~~~~
-usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [--verbatim]
-                 [--no-flushdb] [--binary] [--analysis ANALYSIS]
+usage: napkin.py [-h] [-v V] [-f F] [-t T] [-s] [-o O] [-l L] [-i]
+                 [--verbatim] [--no-flushdb] [--binary] [--analysis ANALYSIS]
                  [--disable-parser] [--disable-tagger]
                  [--token-span TOKEN_SPAN] [--table-format TABLE_FORMAT]
+                 [--full-labels]
 
 Extract statistical analysis of text
 
@@ -46,6 +47,7 @@ optional arguments:
   -s                    display the overall statistics (default is False)
   -o O                  output format (default is csv), json, readable
   -l L                  language used for the analysis (default is en)
+  -i                    Use stdin instead of a filename
   --verbatim            Don't use the lemmatized form, use verbatim. (default
                         is the lematized form)
   --no-flushdb          Don't flush the redisdb, useful when you want to
@@ -61,6 +63,8 @@ optional arguments:
                         Find the sentences where a specific token is located
   --table-format TABLE_FORMAT
                         set tabulate format (default is fancy_grid)
+  --full-labels         store each label value in a ranked set (default is
+                        False)
 ~~~~
 
 # example usage of napkin
