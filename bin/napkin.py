@@ -8,6 +8,7 @@ import sys
 import simplejson as json
 from tabulate import tabulate
 import cld3
+import fileinput
 
 version = "0.9"
 
@@ -18,6 +19,7 @@ parser.add_argument('-t', help="maximum value for the top list (default is 100) 
 parser.add_argument('-s', help="display the overall statistics (default is False)", default=False,  action='store_true')
 parser.add_argument('-o', help="output format (default is csv), json, readable", default="csv")
 parser.add_argument('-l', help="language used for the analysis (default is en)", default="en")
+parser.add_argument('-i', help="Use stdin instead of a filename", default=False, action='store_true')
 parser.add_argument('--verbatim', help="Don't use the lemmatized form, use verbatim. (default is the lematized form)", default=False, action='store_true')
 parser.add_argument('--no-flushdb', help="Don't flush the redisdb, useful when you want to process multiple files and aggregate the results. (by default the redis database is flushed at each run)", default=False, action='store_true')
 parser.add_argument('--binary', help="set output in binary instead of UTF-8 (default)", default=False, action='store_true')
@@ -31,7 +33,7 @@ parser.add_argument('--full-labels', help="store each label value in a ranked se
 
 args = parser.parse_args()
 
-if args.f is None:
+if args.f is None and not args.i:
     parser.print_help()
     sys.exit()
 
@@ -77,8 +79,14 @@ else:
 
 nlp.max_length = 2000000
 
-with open(args.f, 'r') as file:
-    text = file.read()
+if args.f:
+    with open(args.f, 'r') as file:
+        text = file.read()
+
+if args.i:
+    text = ""
+    for line in sys.stdin:
+        text = text + line
 
 detect_lang = cld3.get_language(text)
 if detect_lang[0] != args.l:
